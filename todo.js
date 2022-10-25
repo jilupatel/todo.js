@@ -1,45 +1,32 @@
-const todoList = () => {
-    all = [];
-    const add = (todoItem) => {
-      all.push(todoItem);
-    };
-    const markAsComplete = (index) => {
-      all[index].completed = true;
-    };
-  
-    let today = new Date().toISOString().split("T")[0];
-  
-    const overdue = () => {
-      return all.filter((todo) => {
-        return todo.dueDate < today;
-      });
-    };
-  
-    const dueToday = () => {
-      return all.filter((todo) => {
-        return todo.dueDate === today;
-      });
-    };
-  
-    const dueLater = () => {
-      return all.filter((todo) => {
-        return todo.dueDate > today;
-      });
-    };
-  
-    const toDisplayableList = (list) => {
-      return list
-        .map((todo) => {
-          display_status = todo.completed ? "[x]" : "[ ]";
-          display_date = todo.dueDate == today ? "" : todo.dueDate;
-  
-          return `${display_status} ${todo.title} ${display_date}`;
-        })
-        .join("\n");
-    };
-  
-    return { all, add, markAsComplete, overdue, dueToday, dueLater, toDisplayableList };
-    
-  };
-  
-      module.exports = todoList;
+const todoList = require('../todo');
+
+const {all, markAsComplete, add } = todoList();
+
+describe("TodoList Test Suite", () => {
+    beforeAll(() => {
+        add(
+            {
+                title: "Test todo",
+                completed: false,
+                dueDate: new Date().toLocaleDateString("en-CA")
+            }
+            );
+    })
+        test("Should add new todo", () => {
+        const todoItemsCount=all.length;
+        add(
+            {
+                title: "Test todo",
+                completed: false,
+                dueDate: new Date().toLocaleDateString("en-CA")
+            }
+        );
+        expect(all.length).toBe(todoItemCount + 1);
+    });
+
+    test("should mark a todo as complete", () => {
+        expect(all[0].completed).toBe(false);
+        markAsComplete(0);
+        expect(all[0].completed).toBe(true);
+    })
+})
